@@ -2,16 +2,21 @@
 
 import (
 	"ComplaintSystem/AdminService/internal/types"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 type Handler struct {
-	service *Service
+	service  *Service
+	validate *validator.Validate
 }
 
 func NewHandler(e *echo.Echo, service *Service) {
-	handler := &Handler{service: service}
+
+	handler := &Handler{service: service, validate: validator.New()}
+
+	//validate.RegisterValidation("companyNameFormat", ValidateCompanyNameFormat)
 
 	g := e.Group("/admin")
 	g.POST("/", handler.Create)
@@ -20,7 +25,9 @@ func NewHandler(e *echo.Echo, service *Service) {
 	g.PATCH("/:companyName", handler.PartialUpdate)
 	g.GET("/", handler.GetAll)
 	g.DELETE("/:id", handler.Delete)
+	//e.POST("/login", handler.Login)
 }
+
 func (h *Handler) Create(c echo.Context) error {
 	var admin *types.AdminRequestModel
 	err := c.Bind(&admin)
@@ -28,6 +35,15 @@ func (h *Handler) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": "Can not bind JSON: " + err.Error(),
 		})
+	}
+	if err := ValidateAdmin(admin, h.validate); err != nil {
+		if valErr, ok := err.(*ValidationError); ok {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{
+				"message": err.Error(),
+				"errors":  valErr.Errors,
+			})
+		}
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	id, err := h.service.Create(c.Request().Context(), admin)
 

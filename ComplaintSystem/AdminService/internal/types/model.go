@@ -1,22 +1,27 @@
 ﻿package types
 
-import "time"
+import (
+	"time"
+)
 
 type Admin struct {
-	CompanyName string `bson:"companyName" json:"companyName"`
+	CompanyName string `bson:"companyName" json:"companyName" validate:"required,min=4,max=30,companyNameFormat"`
 	Id          string `bson:"_id" json:"id"`
-	Email       string `bson:"email" json:"email"`
-	Phone       string `bson:"phone" json:"phone"`
+	Email       string `bson:"email" json:"email" `
+	Phone       string `bson:"phone" json:"phone" validate:"required,phoneNumber"`
 	Password    string `bson:"password" json:"password"`
 	Address     string `bson:"address" json:"address"`
 	Category    string `bson:"category" json:"category"`
 	//SocialMedia SocialMedia `bson:"socialMedia" json:"socialMedia"`
 	//Employee     Employee  `bson:"employee" json:"employee"`
-	EmployeeId     string            `bson:"employeeId" json:"employeeId"`
+	EmployeeId     string            `bson:"employeeId" json:"employeeId" `
 	EmployeeRole   string            `bson:"employeeRole" json:"employeeRole"`
 	CreatedAt      time.Time         `bson:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time         `bson:"updatedAt" json:"updatedAt"`
 	AdditionalInfo map[string]string `bson:"additionalInfo" json:"additionalInfo"`
+	/*CustomValidator struct {
+		validator *validator.Validate
+	}*/
 }
 
 /*type SocialMedia struct {

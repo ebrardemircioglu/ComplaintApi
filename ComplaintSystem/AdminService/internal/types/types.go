@@ -3,9 +3,9 @@
 import "time"
 
 type AdminRequestModel struct {
-	CompanyName string `bson:"companyName" json:"companyName"`
+	CompanyName string `bson:"companyName" json:"companyName" validate:"required,min=4,max=30,companyNameFormat"`
 	Email       string `bson:"email" json:"email"`
-	Phone       string `bson:"phone" json:"phone"`
+	Phone       string `bson:"phone" json:"phone" validate:"required,phoneNumber"`
 	Password    string `bson:"password" json:"password"`
 	Address     string `bson:"address" json:"address"`
 	Category    string `bson:"category" json:"category"`
@@ -18,10 +18,10 @@ type AdminRequestModel struct {
 
 type AdminResponseModel struct {
 	Id           string `bson:"_id" json:"id"`
-	CompanyName  string `bson:"companyName" json:"companyName"`
+	CompanyName  string `bson:"companyName" json:"companyName" validate:"required,min=4,max=30,companyNameFormat"`
 	Category     string `bson:"category" json:"category"`
 	Email        string `bson:"email" json:"email"`
-	Phone        string `bson:"phone" json:"phone"`
+	Phone        string `bson:"phone" json:"phone" validate:"required,phoneNumber"`
 	Address      string `bson:"address" json:"address"`
 	EmployeeId   string `bson:"employeeId" json:"employeeId"`
 	EmployeeRole string `bson:"employeeRole" json:"employeeRole"`
